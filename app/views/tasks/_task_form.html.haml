@@ -1,5 +1,6 @@
 .modal-header
-  %h1 New Task
+  %h1
+    = task.new_record? ? 'New Task' : "Editing task #{task.title}"
 = simple_form_for task, remote: true do |f|
   .modal-body
     = f.input :title
