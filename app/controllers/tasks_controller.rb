@@ -6,17 +6,22 @@ class TasksController < ApplicationController
   end
   def create
     @task = Task.new(task_params)
+    @task.user = current_user
+    authorize! :create, @task
     save_task
   end
   def destroy
+    authorize! :destroy, @task
     @task.destroy
-    @tasks = Task.all
+    @tasks = Task.accessible_by(current_ability)
   end
   def edit
+    authorize! :edit, @task
     render :show_form
   end
   def update
     @task.assign_attributes(task_params)
+    authorize! :update, @task
     save_task
   end
   private
@@ -28,7 +33,7 @@ class TasksController < ApplicationController
     end
     def save_task
       if @task.save
-        @tasks = Task.all
+        @tasks = Task.accessible_by(current_ability)
         render :hide_form
       else
         render :show_form
